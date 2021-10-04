@@ -1,0 +1,46 @@
+const getUser = () => {
+    const existingUser =sessionStorage.getItem('userId');
+    if(existingUser) {
+        return existingUser;
+    } else {
+        const newUser = 'user-' + new Date().getTime();
+        sessionStorage.setItem('userId', newUser);
+        return newUser;
+    }
+}
+
+// need to explain
+const getDataKey = () => {
+    const userId = getUser();
+    return `shobEkhane/carts/${userId}`
+}
+
+
+const getDatabaseCart = () => {
+    const dataKey = getDataKey();
+    const data = localStorage.getItem(dataKey) || "{}";
+    return JSON.parse(data);
+}
+
+
+const addToDatabaseCart = (key, count) => {
+    const currentCart = getDatabaseCart();
+    currentCart[key] = count;
+    localStorage.setItem(getDataKey(), JSON.stringify(currentCart));
+}
+
+const removeFromDatabaseCart = (key) => {
+    const currentCart = getDatabaseCart();
+    delete currentCart[key];
+    localStorage.setItem(getDataKey(), JSON.stringify(currentCart));
+}
+
+const processOrder = (cart) => {
+    localStorage.removeItem(getDataKey());
+}
+
+
+export { addToDatabaseCart, getDatabaseCart, removeFromDatabaseCart, processOrder};
+
+
+// polyfill not yet implemented
